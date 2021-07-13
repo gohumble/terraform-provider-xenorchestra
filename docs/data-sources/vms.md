@@ -28,13 +28,13 @@ output "vms_length" {
 ## Argument Reference
 
 * pool_id - (Required) The ID of the pool the vms belong to.
-* host - (Optional) The Id of the host (container) the vms belong to.
+* host - (Optional) The ID of the host (container) the vms belong to.
 * power_state - (Optional) The power state of the vms ("Running" / "Halted")
 
 ## Attributes Reference
 
-* id - The Id of the pool the storage repository exists on.
-* pool_id - The Id of the pool the storage repository exists on.
+* id - The CRC-32 checksum based on arguments passed to this data source.
+* pool_id - The ID of the pool the storage repository exists on.
 * vms - A list of information for all vms found in this pool.
     * vms.id - The uuid for this vm.
     * vms.name_label - The name label for this vm.
@@ -50,8 +50,5 @@ output "vms_length" {
     * vms.resource_set - The resource sets for this vm.
     * vms.disk - The disk information for this vm.
     * vms.network - The network information for this vm.
-    
-    
-    
-    
-    
+    * vms.ipv4_addresses - The ipv4 addresses for this vm.
+    * vms.ipv6_addresses - The ipv6 addresses for this vm.
