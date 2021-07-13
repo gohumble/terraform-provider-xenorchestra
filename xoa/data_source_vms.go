@@ -4,6 +4,7 @@ import (
 	"github.com/ddelnano/terraform-provider-xenorchestra/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"log"
+	"strings"
 )
 
 func dataSourceXoaVms() *schema.Resource {
@@ -67,9 +68,18 @@ func vmToMapList(vms []client.Vm, c client.XOClient) []map[string]interface{} {
 		if err == nil {
 			network = vifsToMapList(vifs, extractIpsFromNetworks(vm.Addresses))
 		}
+		var ipv4 []string
+		var ipv6 []string
+		for key, address := range vm.Addresses {
+			if strings.Contains(key, "ipv4") {
+				ipv4 = append(ipv4, address)
+			} else if strings.Contains(key, "ipv6") {
+				ipv6 = append(ipv6, address)
+			}
+		}
 
 		log.Printf("[DEBUG] VBD on %s (%s) %s\n", vm.VBDs, vm.NameLabel, vm.Id)
-		hostMap := map[string]interface{}{
+		vmMap := map[string]interface{}{
 			"id":                   vm.Id,
 			"name_label":           vm.NameLabel,
 			"cpus":                 vm.CPUs.Number,
@@ -85,11 +95,13 @@ func vmToMapList(vms []client.Vm, c client.XOClient) []map[string]interface{} {
 			"power_state":          vm.PowerState,
 			"disk":                 disk,
 			"network":              network,
+			"ipv4_addresses":       ipv4,
+			"ipv6_addresses":       ipv6,
 			"host":                 vm.Host,
 			"auto_poweron":         vm.AutoPoweron,
 			"name_description":     vm.NameDescription,
 		}
-		result = append(result, hostMap)
+		result = append(result, vmMap)
 	}
 
 	return result
