@@ -48,8 +48,8 @@ output "vms_length" {
     * vms.wait_for_ip - The wait for ip options for this vm.
     * vms.high_availability - The high availability option for this vm.
     * vms.resource_set - The resource sets for this vm.
-    * vms.ipv4_addresses - The ipv4 addresses for this vm.
-    * vms.ipv6_addresses - The ipv6 addresses for this vm.
+    * vms.disk - The disk information for this vm.
+    * vms.network - The network information for this vm.
     
     
     
