@@ -28,7 +28,6 @@ type XOClient interface {
 
 	CreateVm(vmReq Vm, d time.Duration) (*Vm, error)
 	GetVm(vmReq Vm) (*Vm, error)
-	GetVms(vm Vm) ([]Vm, error)
 	UpdateVm(vmReq Vm) (*Vm, error)
 	DeleteVm(id string) error
 	HaltVm(vmReq Vm) error
@@ -215,7 +214,7 @@ type XoObject interface {
 	Compare(obj interface{}) bool
 }
 
-func (c *Client) getObjectTypeFilter(obj XoObject) map[string]interface{} {
+func (c *Client) GetAllObjectsOfType(obj XoObject, response interface{}) error {
 	xoApiType := ""
 	switch t := obj.(type) {
 	case Network:
@@ -241,15 +240,12 @@ func (c *Client) getObjectTypeFilter(obj XoObject) map[string]interface{} {
 	default:
 		panic(fmt.Sprintf("XO client does not support type: %T", t))
 	}
-	return map[string]interface{}{
+	params := map[string]interface{}{
 		"filter": map[string]string{
 			"type": xoApiType,
 		},
 	}
-}
-
-func (c *Client) GetAllObjectsOfType(obj XoObject, response interface{}) error {
-	return c.Call("xo.getAllObjects", c.getObjectTypeFilter(obj), response)
+	return c.Call("xo.getAllObjects", params, response)
 }
 
 func (c *Client) FindFromGetAllObjects(obj XoObject) (interface{}, error) {

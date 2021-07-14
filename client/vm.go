@@ -43,7 +43,6 @@ type Vm struct {
 	CloudConfig        string            `json:"cloudConfig"`
 	ResourceSet        string            `json:"resourceSet,omitempty"`
 	Tags               []string          `json:"tags"`
-	Container          string            `json:"$container"`
 
 	// These fields are used for passing in disk inputs when
 	// creating Vms, however, this is not a real field as far
@@ -69,16 +68,7 @@ func (v Vm) Compare(obj interface{}) bool {
 	if v.NameLabel != "" && v.NameLabel == other.NameLabel {
 		return true
 	}
-	if v.PowerState != "" && v.Container != "" {
-		if (v.PowerState == other.PowerState) && (v.Container == other.Container) {
-			return true
-		}
-		return false
-	} else if v.PowerState != "" && v.PowerState == other.PowerState {
-		return true
-	} else if v.Container != "" && v.Container == other.Container {
-		return true
-	}
+
 	tagCount := len(v.Tags)
 	if tagCount > 0 {
 		for _, tag := range v.Tags {
@@ -302,34 +292,20 @@ func (c *Client) GetVm(vmReq Vm) (*Vm, error) {
 	return &vms[0], nil
 }
 
-func (c *Client) GetVms(vm Vm) ([]Vm, error) {
-	var vms []Vm
+func (c *Client) GetVms() ([]Vm, error) {
+
 	var response map[string]Vm
-	if vm.Container == "" && vm.PowerState == "" {
-		err := c.GetAllObjectsOfType(vm, &response)
+	err := c.GetAllObjectsOfType(Vm{PowerState: "Running"}, &response)
 
-		if err != nil {
-			return []Vm{}, err
-		}
-
-		vms = make([]Vm, 0, len(response))
-		for _, vm := range response {
-			vms = append(vms, vm)
-		}
-
-	} else {
-		obj, err := c.FindFromGetAllObjects(vm)
-
-		if err != nil {
-			return []Vm{}, err
-		}
-		iterator := obj.([]Vm)
-		vms = make([]Vm, 0, len(iterator))
-		for _, vm := range iterator {
-			vms = append(vms, vm)
-		}
-
+	if err != nil {
+		return []Vm{}, err
 	}
+
+	vms := make([]Vm, 0, len(response))
+	for _, vm := range response {
+		vms = append(vms, vm)
+	}
+
 	log.Printf("[DEBUG] Found vms: %+v", vms)
 	return vms, nil
 }
