@@ -8,17 +8,10 @@ import (
 )
 
 type Host struct {
-	Id        string           `json:"id"`
-	NameLabel string           `json:"name_label"`
-	Tags      []interface{}    `json:"tags,omitempty"`
-	Pool      string           `json:"$pool"`
-	Memory    HostMemoryObject `json:"memory"`
-	Cpus      CpuInfo          `json:"cpus"`
-}
-
-type HostMemoryObject struct {
-	Usage int `json:"usage"`
-	Size  int `json:"size"`
+	Id        string        `json:"id"`
+	NameLabel string        `json:"name_label"`
+	Tags      []interface{} `json:"tags,omitempty"`
+	Pool      string        `json:"$pool"`
 }
 
 func (h Host) Compare(obj interface{}) bool {

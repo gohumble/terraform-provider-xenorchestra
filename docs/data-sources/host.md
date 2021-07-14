@@ -24,12 +24,4 @@ Terraform will fail. Ensure that your names are unique when
 using the data source.
 
 ## Attributes Reference
-* id - The id of the host.
-* name_label - Name label of the host.
-* pool_id - Id of the pool that the host belongs to.
-* tags - The tags applied to the host.
-* memory - The memory size for the host.
-* memory_usage - The memory usage for the host.
-* cpus - Host cpu information.
-    * cores - The number of cores.
-    * sockets - The number of sockets.
+* id - Id of the host.
